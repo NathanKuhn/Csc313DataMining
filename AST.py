@@ -2,6 +2,10 @@ import javalang
 import csv
 from typing import Union, Optional
 import pandas as pd
+#import sklearn
+from sklearn.linear_model import LinearRegression
+import numpy as np
+import matplotlib.pyplot as plt
 
 
 MAIN_TABLE = "dataset/Data/MainTable.csv"
@@ -61,6 +65,7 @@ def student_attempts():
     """
 
     subject_attempts = {}
+    #student_depth = {}
     df = pd.read_csv(MAIN_TABLE)
     code_state_df = pd.read_csv(CODE_STATES)
 
@@ -73,6 +78,7 @@ def student_attempts():
 
         if subject_id not in subject_attempts:
                 subject_attempts[subject_id] = []
+
 
         if problem_id == 0:
             problem_id = df['ProblemID'][row]
@@ -118,6 +124,98 @@ def batch_parser(java_code):
 
     return depth
 
+def get_grades():
+    student_grades = {}
+    grades = pd.read_csv(SUBJECT_TABLE)
+    for row in range(0, len(grades)):
+        subject_id = grades['SubjectID'][row]
+
+        if subject_id not in student_grades:
+                student_grades[subject_id] = grades['X-Grade'][row]
+    
+    return student_grades
+
+
+
+def analysis(student_grades, PAA):
+
+    # Organized: key = StudentID, data = [problem #, attempts, AST]
+
+    # AST is of the last attempt of every problem
+    # Could get ast depth per problem per student, or maybe 
+    # Get average number attempts per problem
+    # Look at correlation between AST depth and attempts
+    # Look at correlation between AST depth and grades
+
+    students = list(PAA.keys())
+    total_depth = 0
+    total_attempts = 0
+    student_totals = {}
+
+    for student in students:
+        for data in PAA[student]:
+            if data[2] != None and data[1] != None:
+                total_depth += data[2]
+                total_attempts += data[1]
+
+        # Calculate total attempts per student, and average AST depth per student
+        if student not in student_totals:
+            ave_depth = total_depth / len(PAA[student])
+            ave_attempts = total_attempts /len(PAA[student])
+            student_totals[student] = [ave_attempts, ave_depth]
+            total_depth = 0
+            total_attempts = 0
+        
+        # print(
+        #     f"Student {student} had on average an AST depth of {ave_depth:.2f} per problem"
+        # )
+
+    X = []
+    y = []
+
+    for student in students:
+        X.append(student_totals[student][0])
+        y.append(student_totals[student][1])
+    
+    X = np.array(X, dtype=np.float32).reshape(-1, 1)
+    y = np.array(y, dtype=np.float32)
+
+    model = LinearRegression().fit(X, y)
+    print(f"R^2: {model.score(X, y)}")
+    print(f"Intercept: {model.intercept_}")
+    print(f"Slope: {model.coef_}")
+
+    plt.figure(figsize=(6, 4))
+    plt.title("Average attempts vs. Average AST Depth")
+    plt.scatter(X, y)
+    plt.xlabel("Average Attempts")
+    plt.ylabel("Average AST Depth")
+
+    X = []
+    y = []
+
+    print("Model two:")
+    for student in students:
+        X.append(student_grades[student])
+        y.append(student_totals[student][1])
+    
+    X = np.array(X, dtype=np.float32).reshape(-1, 1)
+    y = np.array(y, dtype=np.float32)
+
+    model = LinearRegression().fit(X, y)
+    print(f"R^2: {model.score(X, y)}")
+    print(f"Intercept: {model.intercept_}")
+    print(f"Slope: {model.coef_}")
+
+    plt.figure(figsize=(6, 4))
+    plt.title("Grade vs. AST Depth")
+    plt.scatter(X, y)
+    plt.xlabel("Class Grade")
+    plt.ylabel("Average AST Depth")
+
+    plt.show()
+
+    return
 
 if __name__ == "__main__":
 
@@ -125,3 +223,5 @@ if __name__ == "__main__":
     # Thinking about using a linear classifier to classifty students above or below a certain threshold.
     # Threshold could be the average or median number of attempts per problem?
     student_attempts_ast = student_attempts()
+    grades = get_grades()
+    analysis(grades, student_attempts_ast)
