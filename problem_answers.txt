@@ -1,0 +1,18 @@
+1. 
+There are 413 unique students in this dataset.
+The subjects table has the final grade for a student while the main table has any programming attempts. 
+Some students may have dropped the class and therefore not received a final grade.
+To obtain this answer, I created a set of student IDs and iterated over both early and late tables to populate the set. The answer was just the set size.
+
+2.
+Problem 102 had the highest average attempts per student (10.42)
+To obtain this answer I counted number of attempts per problem and kept track of a set of students who had attempted the problem.
+Each problem average could be found with the attempts over the size of each student set.
+The answer was the maximum average value.
+
+3.
+Problem 13 had the highest average number of compiler errors per student (7.95)
+Knowing which problem had more errors per student would be more meaningful, as this better shows difficulty.
+To obtain this, I iterated over the main table and kept track of errors per problem and students per problem using a set.
+I then did the same operation to obtain an average for each as in problem 2.
+The answer was the maximum average value.
