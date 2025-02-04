@@ -74,6 +74,13 @@ def whitespace_dataset():
         print(f"Intercept: {model.intercept_:.4f}")
         print(f"Slope:     {model.coef_[0]:.4f}")
 
+        plt.scatter(X, y)
+        plt.plot(X, model.predict(X), color="red")
+        plt.title("Grade vs Whitespace")
+        plt.xlabel("Average Whitespace")
+        plt.ylabel("Grade")
+        plt.show()
+
 
 if __name__ == "__main__":
     whitespace_dataset()
