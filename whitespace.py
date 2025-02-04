@@ -56,31 +56,23 @@ def whitespace_dataset():
             for k in problem_set_by_student
         }
 
-        students = list(attempts_by_student.keys())
-        student_id = students[1]
-        print(
-            f"Student {student_id} had on average {avg_whitespace_by_student[student_id]:.2f} whitespace characters per problem"
-        )
-
         X = []
         y = []
 
-        for student_id in students:
+        for student_id in avg_whitespace_by_student:
             if student_id not in grade_by_id or float(grade_by_id[student_id]) <= 0.1:
                 continue
-            X.append(avg_attempts_by_student[student_id])
+            X.append(avg_whitespace_by_student[student_id])
             y.append(grade_by_id[student_id])
 
         X = np.array(X, dtype=np.float32).reshape(-1, 1)
         y = np.array(y, dtype=np.float32)
 
         model = sklearn.linear_model.LinearRegression().fit(X, y)
-        print(f"R^2: {model.score(X, y)}")
-        print(f"Intercept: {model.intercept_}")
-        print(f"Slope: {model.coef_}")
-
-        plt.scatter(X, y)
-        plt.show()
+        print("Grade vs Whitespace Model Results:")
+        print(f"R^2:       {model.score(X, y):.4f}")
+        print(f"Intercept: {model.intercept_:.4f}")
+        print(f"Slope:     {model.coef_[0]:.4f}")
 
 
 if __name__ == "__main__":

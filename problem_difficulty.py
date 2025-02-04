@@ -52,9 +52,9 @@ def get_difficulty_stats():
 
     linear_model = sklearn.linear_model.LinearRegression()
     linear_model.fit(X.reshape(-1, 1), y)
-    print(f"R^2: {linear_model.score(X.reshape(-1, 1), y)}")
-    print(f"Intercept: {linear_model.intercept_}")
-    print(f"Slope: {linear_model.coef_}")
+    print(f"R^2:       {linear_model.score(X.reshape(-1, 1), y):.4f}")
+    print(f"Intercept: {linear_model.intercept_:.4f}")
+    print(f"Slope:    {linear_model.coef_[0]:.4f}")
     
     plt.plot(X, linear_model.predict(X.reshape(-1, 1)), color="red")
     plt.scatter(X, y)
