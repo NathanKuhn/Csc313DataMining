@@ -12,5 +12,5 @@ pip install -r requirements.txt
 3. Run any script using python:
 
 ```
-python [problem_difficulty.py | linear_classifier.py | whitespace.py]
+python [problem_difficulty.py | linear_classifier.py | whitespace.py | AST.py | ASTProblemAvg.py]
 ```

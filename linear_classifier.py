@@ -89,7 +89,7 @@ def get_dataset():
 
         y.append(grades[student_id])
 
-    y = [1 if grade > 0.60 else 0 for grade in y]
+    y = [1 if grade > np.mean(y) else 0 for grade in y]
 
     return np.array(X, dtype=np.float32), np.array(y, dtype=np.float32)
 
@@ -99,7 +99,7 @@ def main():
 
     # Shuffle the dataset
     indices = np.arange(len(X))
-    np.random.seed(412411)
+    np.random.seed(1)
     np.random.shuffle(indices)
     X = X[indices]
     y = y[indices]
@@ -111,6 +111,7 @@ def main():
     model = sklearn.linear_model.LogisticRegression()
     model.fit(X_train, y_train)
     print(f"Accuracy: {model.score(X_test, y_test):.4f}")
+    print(f"Random accuracy: {np.mean(y_test)}")
     print(f"Coefficients:")
     print(f"  Early Attempts:  {model.coef_[0][0]:.2f}")
     print(f"  Early Successes: {model.coef_[0][1]:.2f}")
