@@ -49,11 +49,18 @@ def get_difficulty_stats():
     X = np.array([avg_attempts[k] for k in problems])
     y = np.array([avg_successes[k] for k in problems])
 
+
     linear_model = sklearn.linear_model.LinearRegression()
     linear_model.fit(X.reshape(-1, 1), y)
     print(f"R^2: {linear_model.score(X.reshape(-1, 1), y)}")
+    print(f"Intercept: {linear_model.intercept_}")
+    print(f"Slope: {linear_model.coef_}")
     
+    plt.plot(X, linear_model.predict(X.reshape(-1, 1)), color="red")
     plt.scatter(X, y)
+    plt.xlabel("Log of average attempts")
+    plt.ylabel("Average successes")
+    plt.title("Successes vs Attempts")
     plt.show()
 
 
