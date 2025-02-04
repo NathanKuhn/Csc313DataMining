@@ -3,9 +3,6 @@ import numpy as np
 import sklearn
 import matplotlib.pyplot as plt
 
-# change numpy print formatting
-np.set_printoptions(formatter={"float": "{: 0.2f}".format})
-
 CODE_STATE_FILE = "dataset/Data/CodeStates/CodeStates.csv"
 MAIN_TABLE = "dataset/Data/MainTable.csv"
 GRADE_TABLE = "dataset/Data/LinkTables/Subject.csv"
@@ -113,13 +110,13 @@ def main():
 
     model = sklearn.linear_model.LogisticRegression()
     model.fit(X_train, y_train)
-    print(f"Accuracy: {model.score(X_test, y_test)}")
+    print(f"Accuracy: {model.score(X_test, y_test):.4f}")
     print(f"Coefficients:")
     print(f"  Early Attempts:  {model.coef_[0][0]:.2f}")
     print(f"  Early Successes: {model.coef_[0][1]:.2f}")
     print(f"  Late Attempts:   {model.coef_[0][2]:.2f}")
     print(f"  Late Successes:  {model.coef_[0][3]:.2f}")
-    print(f"Intercept:         {model.intercept_[0]}")
+    print(f"Intercept:         {model.intercept_[0]:.2f}")
 
 
 if __name__ == "__main__":
